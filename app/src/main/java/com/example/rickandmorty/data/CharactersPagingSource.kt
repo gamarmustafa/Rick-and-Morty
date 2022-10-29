@@ -1,6 +1,5 @@
 package com.example.rickandmorty.data
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.rickandmorty.api.Api
@@ -9,13 +8,13 @@ import java.io.IOException
 
 private const val STARTING_PAGE_INDEX = 1
 
-class CharactersPagingSource(private val api: Api) :
+class CharactersPagingSource(private val api: Api,private val name:String,private val status:String,private val gender:String ) :
     PagingSource<Int, Character>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Character> {
         val position = params.key ?: STARTING_PAGE_INDEX
         return try {
             val nextPage: Int = params.key ?: STARTING_PAGE_INDEX
-            val response = api.getCharacters(nextPage)
+            val response = api.getCharacters(nextPage,name,status,gender)
             val characters = response.results
 
             LoadResult.Page(

@@ -6,5 +6,58 @@
         android:icon="@drawable/ic_search"
         android:title="Search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="ifRoom|collapseActionView"/>
+        app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
+        android:id="@+id/filter_status"
+        android:title="Status"
+        app:showAsAction="never">
+        <menu>
+            <group
+                android:id="@+id/group_status"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/status_all"
+                    android:checked="true"
+                    android:title="All" />
+                <item
+                    android:id="@+id/status_alive"
+                    android:title="Alive" />
+                <item
+                    android:id="@+id/status_dead"
+                    android:title="Dead" />
+                <item
+                    android:id="@+id/status_unknown"
+                    android:title="Unknown" />
+            </group>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/filter_gender"
+        android:title="Gender"
+        app:showAsAction="never">
+        <menu>
+            <group
+                android:id="@+id/group_gender"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/gender_all"
+                    android:checked="true"
+                    android:title="All" />
+                <item
+                    android:id="@+id/gender_male"
+                    android:title="Male" />
+                <item
+                    android:id="@+id/gender_female"
+                    android:title="Female" />
+                <item
+                    android:id="@+id/gender_genderless"
+                    android:title="Genderless" />
+                <item
+                    android:id="@+id/gender_unknown"
+                    android:title="Unknown" />
+            </group>
+        </menu>
+    </item>
 </menu>
