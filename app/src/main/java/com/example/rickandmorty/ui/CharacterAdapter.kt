@@ -73,4 +73,5 @@ class CharacterAdapter(private val listener: OnItemClickListener) :
                 }
             }
     }
+
 }

@@ -5,6 +5,8 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.rickandmorty.R
 import com.example.rickandmorty.data.Character
 import com.example.rickandmorty.databinding.FragmentCharactersBinding
@@ -28,6 +30,18 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),CharacterAdapt
         }
         viewModel.characters.observe(viewLifecycleOwner) {
             adapter.submitData(viewLifecycleOwner.lifecycle,it)
+        }
+
+        val swipe:SwipeRefreshLayout? = binding?.swipeToRefresh
+        swipe?.setOnRefreshListener {
+            viewModel.characters.observe(viewLifecycleOwner) {
+                adapter.submitData(viewLifecycleOwner.lifecycle, PagingData.empty())
+            }
+
+            viewModel.characters.observe(viewLifecycleOwner) {
+                adapter.submitData(viewLifecycleOwner.lifecycle,it)
+                swipe.isRefreshing=false
+            }
         }
     }
 

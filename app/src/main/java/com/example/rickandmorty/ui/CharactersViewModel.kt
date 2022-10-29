@@ -1,6 +1,4 @@
 package com.example.rickandmorty.ui
-
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -11,8 +9,6 @@ import javax.inject.Inject
 @HiltViewModel
 class CharactersViewModel @Inject constructor(private val repository: Repository):ViewModel() {
 
-
     val characters = repository.getResults().cachedIn(viewModelScope)
-
 
 }
