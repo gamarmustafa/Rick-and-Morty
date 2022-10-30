@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.RadioButton
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -24,7 +25,6 @@ import com.example.rickandmorty.databinding.FragmentCharactersBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.math.log
-
 
 @AndroidEntryPoint
 class CharactersFragment : Fragment(R.layout.fragment_characters),
@@ -51,6 +51,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
         }
 
+
         //swipe to refresh
         val swipe: SwipeRefreshLayout? = binding?.swipeToRefresh
         swipe?.setOnRefreshListener {
@@ -73,6 +74,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                 //when there's no result
                 if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && adapter.itemCount < 1) {
                     tvNoResult.isVisible = true
+                    recyclerView.isVisible = false
                 } else {
                     Log.i("this", "happened: ")
                     tvNoResult.isVisible = false

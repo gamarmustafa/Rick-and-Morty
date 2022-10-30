@@ -46,9 +46,6 @@ class CharactersViewModel @Inject constructor(private val repository: Repository
         currentGender.value = gender
     }
 
-
-
-
     companion object{
         private const val DEFAULT_NAME_QUERY = ""
         private const val DEFAULT_STATUS = ""

@@ -29,9 +29,14 @@ class CharacterLoadStateAdapter(private val retry: () -> Unit) :
                 btRetry.isVisible = loadState !is LoadState.Loading
                 tvError.isVisible = loadState !is LoadState.Loading
 
-                if (loadState.endOfPaginationReached) {
-                    btRetry.isVisible = false
-                    tvError.isVisible = false
+                //hide retry button when end of pagination reached
+                if (loadState is LoadState.Error) {
+                    Log.i("loadState.Error message", loadState.error?.localizedMessage.toString())
+                    val errorMessage =loadState.error?.localizedMessage.toString()
+                    if(errorMessage.trim() == "HTTP 404"){
+                        btRetry.isVisible =false
+                        tvError.isVisible =false
+                    }
                 }
             }
         }
