@@ -62,29 +62,35 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
             swipe.isRefreshing = false
         }
 
-
         adapter.addLoadStateListener { loadState ->
             binding?.apply {
                 progressBar.isVisible = loadState.source.refresh is LoadState.Loading
                 recyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
-                btRetry.isVisible = loadState.source.refresh is LoadState.Error
-                tvError.isVisible = loadState.source.refresh is LoadState.Error
 
-
-                //when there's no result
-                if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && adapter.itemCount < 1) {
-                    tvNoResult.isVisible = true
-                    recyclerView.isVisible = false
-                } else {
-                    Log.i("this", "happened: ")
-                    tvNoResult.isVisible = false
+                //when there's no result for the query
+                val errorState = when {
+                    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+                    loadState.prepend is LoadState.Error ->  loadState.prepend as LoadState.Error
+                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+                    else -> null
                 }
-                Log.i("letsee1", (loadState.source.refresh is LoadState.NotLoading).toString())
-                Log.i("letsee2", loadState.append.endOfPaginationReached.toString())
-                Log.i("letsee3", (adapter.itemCount < 1).toString())
+                tvNoResult.isVisible=false
+                errorState?.let {
+                    if (errorState.error.localizedMessage?.trim() == "HTTP 404"){
+                        recyclerView.isVisible=false
+                        btRetry.isVisible=false
+                        tvError.isVisible=false
+                        tvNoResult.isVisible=true
+                    }else{
+                        //when there's no internet connection
+                        tvNoResult.isVisible=false
+                        btRetry.isVisible = loadState.source.refresh is LoadState.Error
+                        tvError.isVisible = loadState.source.refresh is LoadState.Error
+                    }
+                }
+                //Log.i("error message", errorState?.error?.localizedMessage.toString())
             }
         }
-
 
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {

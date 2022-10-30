@@ -1,5 +1,6 @@
 package com.example.rickandmorty.data
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.rickandmorty.api.Api
@@ -26,7 +27,6 @@ class CharactersPagingSource(private val api: Api,private val name:String,privat
             LoadResult.Error(exception)
         } catch (exception: HttpException) {
             LoadResult.Error(exception)
-
         }
 
     }
