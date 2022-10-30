@@ -1,5 +1,6 @@
 package com.example.rickandmorty.ui
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -7,6 +8,7 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmorty.databinding.LoadStateHeaderFooterBinding
+import kotlin.math.log
 
 class CharacterLoadStateAdapter(private val retry: () -> Unit) :
     LoadStateAdapter<CharacterLoadStateAdapter.LoadStateViewHolder>() {

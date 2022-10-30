@@ -1,6 +1,8 @@
 package com.example.rickandmorty.ui
 import androidx.lifecycle.*
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.rickandmorty.data.Character
 import com.example.rickandmorty.data.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +32,7 @@ class CharactersViewModel @Inject constructor(private val repository: Repository
 
     val characters = charactersFlow.asLiveData()
 
+    val refreshedCharacters = repository.getCharacters("","","").cachedIn(viewModelScope).asLiveData()
 
     fun searchCharacterByName(query: String) {
         currentQuery.value = query
@@ -42,6 +45,8 @@ class CharactersViewModel @Inject constructor(private val repository: Repository
     fun searchCharacterByGender(gender: String) {
         currentGender.value = gender
     }
+
+
 
 
     companion object{

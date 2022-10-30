@@ -12,6 +12,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -21,6 +22,8 @@ import com.example.rickandmorty.R
 import com.example.rickandmorty.data.Character
 import com.example.rickandmorty.databinding.FragmentCharactersBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import kotlin.math.log
 
 
 @AndroidEntryPoint
@@ -52,7 +55,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
         val swipe: SwipeRefreshLayout? = binding?.swipeToRefresh
         swipe?.setOnRefreshListener {
             adapter.submitData(viewLifecycleOwner.lifecycle, PagingData.empty())
-            viewModel.characters.observe(viewLifecycleOwner) {
+            viewModel.refreshedCharacters.observe(viewLifecycleOwner) {
                 adapter.submitData(viewLifecycleOwner.lifecycle, it)
             }
             swipe.isRefreshing = false
@@ -93,7 +96,9 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                     androidx.appcompat.widget.SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String): Boolean {
                         binding?.recyclerView?.scrollToPosition(0)
+                        Log.i("query", query)
                         viewModel.searchCharacterByName(query)
+                        Log.i("query2", "happened")
                         searchView.clearFocus()
                         return true
                     }
