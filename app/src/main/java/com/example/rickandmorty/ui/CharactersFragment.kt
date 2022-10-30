@@ -6,25 +6,21 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.RadioButton
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.paging.filter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.rickandmorty.R
 import com.example.rickandmorty.data.Character
 import com.example.rickandmorty.databinding.FragmentCharactersBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import kotlin.math.log
 
 @AndroidEntryPoint
 class CharactersFragment : Fragment(R.layout.fragment_characters),
@@ -51,11 +47,12 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
         }
 
-
         //swipe to refresh
         val swipe: SwipeRefreshLayout? = binding?.swipeToRefresh
         swipe?.setOnRefreshListener {
+            swipe.setColorSchemeResources(R.color.green)
             adapter.submitData(viewLifecycleOwner.lifecycle, PagingData.empty())
+            viewModel.searchCharacterByName("")
             viewModel.refreshedCharacters.observe(viewLifecycleOwner) {
                 adapter.submitData(viewLifecycleOwner.lifecycle, it)
             }
@@ -66,12 +63,13 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
             binding?.apply {
                 progressBar.isVisible = loadState.source.refresh is LoadState.Loading
                 recyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
+                btRetry.isVisible=false
+                tvError.isVisible=false
 
                 //when there's no result for the query
                 val errorState = when {
                     loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
                     loadState.prepend is LoadState.Error ->  loadState.prepend as LoadState.Error
-                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
                     else -> null
                 }
                 tvNoResult.isVisible=false
@@ -88,7 +86,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                         tvError.isVisible = loadState.source.refresh is LoadState.Error
                     }
                 }
-                //Log.i("error message", errorState?.error?.localizedMessage.toString())
+                Log.i("error message", errorState?.error?.localizedMessage.toString())
             }
         }
 
@@ -96,9 +94,9 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_character, menu)
-
                 val searchItem = menu.findItem(R.id.action_search)
                 val searchView = searchItem.actionView as androidx.appcompat.widget.SearchView
+                searchView.queryHint="Search Characters"
 
                 searchView.setOnQueryTextListener(object :
                     androidx.appcompat.widget.SearchView.OnQueryTextListener {
@@ -201,9 +199,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
 
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
     }
-
 
     override fun onItemClick(character: Character) {
         val action =
